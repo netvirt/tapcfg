@@ -44,7 +44,7 @@ if GetOption('gcc64'):
 	env.Append(CXXFLAGS = ['-m64'])
 	env.Append(LINKFLAGS = ['-m64'])
 
-env.Append(CFLAGS = ['-Wall', '-Werror', '-O2'])
+env.Append(CFLAGS = ['-Wall', '-O2'])
 
 conf = Configure(env)
 conf.CheckLib('socket')
