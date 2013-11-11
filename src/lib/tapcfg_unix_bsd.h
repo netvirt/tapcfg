@@ -17,6 +17,12 @@
 #include <netinet/in.h>
 #include <ifaddrs.h>
 
+#ifdef __OpenBSD__
+#  include <net/if.h>
+#  include <net/if_types.h>
+#  include <net/if_tun.h>
+#endif
+
 #ifdef __NetBSD__
 #  include <net/if_tap.h>
 #endif
@@ -57,6 +63,28 @@ tapcfg_start_dev(tapcfg_t *tapcfg, const char *ifname, int fallback)
 			}
 			/* Copy device name into buffer */
 			strncpy(buf, ifr.ifr_name, sizeof(buf)-1);
+		}
+#elif __OpenBSD__
+		{
+			int i;
+			struct tuninfo info;
+
+			/* Try all possible devices, because configured name failed */
+			for (i=0; i<16; i++) {
+				snprintf(buf, sizeof(buf)-1, "/dev/tun%u", i);
+				tap_fd = open(buf, O_RDWR);
+				if (tap_fd >= 0) {
+					/* Found one! Copy device name into buffer */
+					memmove(buf, buf+5, sizeof(buf)-5);
+					break;
+				}
+			}
+
+			ioctl(tap_fd, TUNGIFINFO, &info);
+			info.flags = IFF_UP | IFF_MULTICAST | IFF_BROADCAST;
+			info.type = IFT_ETHER;
+			ioctl(tap_fd, TUNSIFINFO, &info);
+
 		}
 #else
 		{
