@@ -42,7 +42,7 @@ tapcfg_start_dev(tapcfg_t *tapcfg, const char *ifname, int fallback)
 	}
 	ret = ioctl(tap_fd, TUNSETIFF, &ifr);
 
-	if (ret == -1 && errno == EINVAL && fallback) {
+	if (ret == -1 && (errno == EINVAL || errno == EBUSY) && fallback) {
 		taplog_log(&tapcfg->taplog, TAPLOG_INFO,
 		           "Opening device '%s' failed, trying to find another one",
 		           ifname);
