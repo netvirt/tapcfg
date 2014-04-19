@@ -75,16 +75,14 @@ tapcfg_start_dev(tapcfg_t *tapcfg, const char *ifname, int fallback)
 				tap_fd = open(buf, O_RDWR);
 				if (tap_fd >= 0) {
 					/* Found one! Copy device name into buffer */
+					ioctl(tap_fd, TUNGIFINFO, &info);
+					info.flags = IFF_BROADCAST | IFF_MULTICAST;
+					info.type = IFT_ETHER;
+
 					memmove(buf, buf+5, sizeof(buf)-5);
 					break;
 				}
 			}
-
-			ioctl(tap_fd, TUNGIFINFO, &info);
-			info.flags = IFF_UP | IFF_MULTICAST | IFF_BROADCAST;
-			info.type = IFT_ETHER;
-			ioctl(tap_fd, TUNSIFINFO, &info);
-
 		}
 #else
 		{

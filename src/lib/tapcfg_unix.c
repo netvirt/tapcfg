@@ -371,6 +371,12 @@ tapcfg_iface_set_status(tapcfg_t *tapcfg, int flags)
 	} else {
 		ifr.ifr_flags &= ~IFF_UP;
 	}
+#elif __OpenBSD__
+	if (flags) {
+		ifr.ifr_flags |= (IFF_UP | IFF_RUNNING | IFF_LINK0);
+	} else {
+		ifr.ifr_flags &= ~(IFF_UP | IFF_RUNNING | IFF_LINK0);
+	}
 #else
 	if (flags) {
 		ifr.ifr_flags |= (IFF_UP | IFF_RUNNING);
