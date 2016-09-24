@@ -71,7 +71,7 @@ tapcfg_start_dev(tapcfg_t *tapcfg, const char *ifname, int fallback)
 
 			/* Try all possible devices, because configured name failed */
 			for (i=0; i<16; i++) {
-				snprintf(buf, sizeof(buf)-1, "/dev/tun%u", i);
+				snprintf(buf, sizeof(buf)-1, "/dev/tap%u", i);
 				tap_fd = open(buf, O_RDWR);
 				if (tap_fd >= 0) {
 					/* Found one! Copy device name into buffer */
