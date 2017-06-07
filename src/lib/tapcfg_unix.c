@@ -128,7 +128,7 @@ tapcfg_start(tapcfg_t *tapcfg, const char *ifname, int fallback)
 	tapcfg->started = 1;
 	tapcfg->status = TAPCFG_STATUS_ALL_DOWN;
 
-	return 0;
+	return tap_fd;
 
 err:
 	/* Clean up in case of an error */
